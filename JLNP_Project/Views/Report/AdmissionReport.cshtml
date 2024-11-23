@@ -1,0 +1,99 @@
+﻿<style>
+    .badgecus{
+        margin-top: 7px;
+        border-radius: 14px;
+        font-size: 9px;
+    }
+</style>
+<div class="">
+    <div class="">
+        <div class="row py-2 px-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                        <h4 style="color:black;">Admission Report</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <lable>From Date</lable>
+                                <input type="text" class="form-control" id="fromdate" placeholder="From Date">
+                            </div>
+                            <div class="col-md-3">
+                                <lable>From Date</lable>
+                                <input type="text" class="form-control" id="todate" placeholder="From Date">
+                            </div>
+                            <div class="col-md-3">
+                                <lable>Emrollment Number</lable>
+                                <input type="text" class="form-control" id="txtenrolnumber" placeholder="Emrollment Number">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" onclick="Filterdata()" class="btn btn-outline-primary waves-effect waves-light" style="margin-top:20px;" id="btnsearch">Search</button>
+                            </div>
+                            <!-- end col -->
+
+                        </div>
+                        <div class="table-responsive" style="margin-top:12px;">
+                            <table id="tbladmission" class="table table-borderd">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th class="text-nowrap">Father Name</th>
+                                        <th class="text-nowrap">Mother Name</th>
+                                        <th class="text-nowrap">Father Occupation</th>
+                                        <th class="text-nowrap">Religion</th>
+                                        <th class="text-nowrap">Email</th>
+                                        <th>Mobile</th>
+                                        <th>DOB</th>
+                                        <th class="text-nowrap">Enrollment Number</th>
+                                        <th>Program</th>
+                                        <th>Branch</th>
+                                        <th>Year</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Group</th>
+                                        <th class="text-nowrap">Fees Status</th>
+                                        <th class="text-nowrap">Admission Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        LoadDate('fromdate', 'todate');
+        Loaddata();
+    });
+    var Loaddata = function() {
+        preloader.load();
+        $.post('/Report/_AdmissionReport').done(function(result) {
+            preloader.remove();
+            $('#tbladmission tbody').html(result);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+        });
+    }
+    var Filterdata = () => {
+        let obj = {
+            FromDate: $('#fromdate').val(),
+            ToDate: $('#todate').val(),
+            RgistrationNo: $('#txtenrolnumber').val()
+        }
+        preloader.load();
+        $.post('/Report/_AdmissionReport', obj).done(function(result) {
+            preloader.remove();
+            $('#tbladmission tbody').html(result);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+        });
+    }
+</script>

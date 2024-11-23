@@ -1,0 +1,168 @@
+﻿@model List<ProgramMaster>
+@{
+   
+}
+<div class="">
+    <div class="">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                        <h4 style="color:black;">Project Report</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label>StudentName<span style="color:red;">*</span></label>
+                                <input class="form-control" id="txtsname" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Select Program<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlprogram" onchange="Bindbranch()">
+                                    <option value="">-- Select Program --</option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.Id">@item.Program</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Select Branch<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlbranch" onchange="selectyear()">
+                                    <option value="">-- Select Branch --</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Select Year<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlyear">
+                                    <option value="">-- Select Year --</option>
+                                    <option value="1">First Year </option>
+                                    <option value="2">Second Year</option>
+                                    <option value="3">Third Year </option>
+                                    <option value="4">Final Year </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label>Enrollment<span style="color:red;">*</span></label>
+                                <input class="form-control" id="txtenrolment" type="text" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Project Title<span style="color:red;">*</span></label>
+                                <input class="form-control" id="txttitle" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Techonolagy<span style="color:red;">*</span></label>
+                                <input class="form-control" id="txttecho" />
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-outline-primary" id="btnsubmit" onclick="btnsubmit()" style="margin-top: 29px;width: 43%;">Save</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive table-striped" style="margin-top:13px;">
+                            <table class="table mb-0" id="tblpreport">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Entrollment Number</th>
+                                        <th>Name</th>
+                                        <th>Program</th>
+                                        <th>Branch</th>
+                                        <th>Year</th>
+                                        <th>Project Title</th>
+                                        <th>Techonolagy</th>
+                                        <th>Submit Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        Bindbranch();
+        Loaddata();
+    });
+    var btnsubmit = () => {
+        if ($('#txtsname').val() == '') {
+            alert("Please Enter Student Name");
+            $('#txtsname').focus();
+            return false;
+        }
+        if ($('#ddlprogram option:selected').val() == '') {
+            alert("Please Select Program");
+            $('#ddlprogram').focus();
+            return false;
+        }
+        if ($('#ddlbranch option:selected').val() == '') {
+            alert("Please Select Branch");
+            $('#ddlbranch').focus();
+            return false;
+        }
+        if ($('#ddlyear option:selected').val() == '') {
+            alert("Please Select Year");
+            $('#ddlyear').focus();
+            return false;
+        }
+        if ($('#txtenrolment').val() == '') {
+            alert("Please Enter Enrollment");
+            $('#txtenrolment').focus();
+            return false;
+        }
+        if ($('#txttitle').val() == '') {
+            alert("Please Enter ProjectTitle");
+            $('#txttitle').focus();
+            return false;
+        }
+        if ($('#txttecho').val() == '') {
+            alert("Please Enter Techonology");
+            $('#txttecho').focus();
+            return false;
+        }
+        let obj = {
+            StudentName: $('#txtsname').val(),
+            Program: $('#ddlprogram option:selected').val(),
+            Branch: $('#ddlbranch option:selected').val(),
+            Year: $('#ddlyear option:selected').val(),
+            Enrollment: $('#txtenrolment').val(),
+            ProjectTitle: $('#txttitle').val(),
+            Techonology: $('#txttecho').val()
+        }
+        preloader.load();
+        $.post('/Report/SaveProjectReport', obj).done(function(result) {
+            preloader.remove();
+            alertnotify(result.statuscode,result.msg);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+            alert("Server Error");
+        });
+    }
+    var Bindbranch = () => {
+        $.post('/Admission/BindProgramWiseBranch', { ProgramId: $('#ddlprogram option:selected').val() }).done(function(result) {
+            console.log(result);
+            $('#ddlbranch').empty();
+            for (var i = 0; i < result.length; i++) {
+                $('#ddlbranch').append('<option value="' + result[i].branchId + '">' + result[i].branchName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+        });
+    }
+    var Loaddata = () =>{
+        preloader.load();
+        $.post('/Report/GetProjectReport').done(function(result){
+            preloader.remove();
+            $('#tblpreport tbody').html(result);
+        }).fail(function(xhr){
+            console.log(xhr.responseText);
+            alert("Server Error");
+        })
+    }
+</script>

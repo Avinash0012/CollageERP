@@ -1,0 +1,109 @@
+﻿<div class="">
+    <div class="">
+        <div class="row px-2 py-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                        <h4 style="color:black;">Notifications</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <lable>From Date</lable>
+                                <input type="date" class="form-control" placeholder="From Date">
+                            </div>
+                            <div class="col-md-3">
+                                <lable>From Date</lable>
+                                <input type="date" class="form-control" placeholder="From Date">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" onclick="getdata()" class="btn btn-outline-primary waves-effect waves-light" style="margin-top:20px;" id="btnsearch">Search</button>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <div class="table-responsive table-striped" style="margin-top:13px;">
+                            <table class="table mb-0" id="tblbranch">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Notification Title</th>
+                                        <th>Notification Description</th>
+                                        <th>IsStaff</th>
+                                        <th>EntryDate</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        loadrecord();
+    });
+    var loadrecord = () => {
+        $.post('/Master/GetNotificationMaster').done(function(result) {
+            console.log(result);
+            $('#tblbranch tbody').html(result);
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console.log(xhr.responseText);
+        });
+    }
+    var EditRecord = function(NotifyID) {
+        $.post('/Master/EditNotificationMaster', { ID: NotifyID }).done(function(result) {
+            $('body').append(result);
+            $('#myModalNew').modal('show');
+            $('[data-dismiss="modal"]').unbind().click(function() {
+                $('.modal,.modal-backdrop').remove();
+            })
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console(xhr.responseText);
+        });
+    }
+    var SaveRecord = function(NotifyID) {
+        let obj = {
+            Notificationtitle: $('#notititle').val(),
+            NotificationDescription: $('#notidesc').val(),
+            ID: NotifyID
+        }
+        $.post('/Master/NotificationMaster',obj).done(function(result) {
+            alertnotify(result.statuscode,result.msg);
+            if (result.statuscode == 1) {
+                loadrecord
+            }
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console(xhr.responseText);
+        });
+    }
+    var DeleteRecord = function(NotifyID) {
+        $.post('/Master/DeleteNotificationMaster', {ID:NotifyID}).done(function(result) {
+            alertnotify(result.statuscode,result.msg);
+            if (result.statuscode == 1) {
+                loadrecord
+            }
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console(xhr.responseText);
+        });
+    }
+    var UpdateType = function(NotifyID) {
+        let columnsts = 1;
+        $.post('/Master/UpdateNotificationtype', {ID:NotifyID,IsStaff:columnsts}).done(function(result) {
+            alertnotify(result.statuscode,result.msg);
+            if (result.statuscode == 1) {
+                loadrecord
+            }
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console(xhr.responseText);
+        });
+    }
+</script>

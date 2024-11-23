@@ -1,0 +1,197 @@
+﻿@{
+    Layout = "_Layoutsiteadmin";
+}
+<style>
+    label{
+        margin-top: 10px;
+    }
+</style>
+<!--=========== Contact Info Section ========= -->
+@model List<ProgramMaster>
+<section class="contact-info pt-120 pb-120">
+    <div class="container">
+        <div class="section-header section-center wow fadeInDown" data-wow-delay="0.3s">
+            <h3 class="section-title">
+                Registration
+            </h3>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="contact-right">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group"><label>Name</label> <input type="text" placeholder="Name" class="form-control" id="name"> </div>
+                            <div class="form-group"><label>Father Name</label> <input type="text" placeholder="Father Name" class="form-control" id="fname"> </div>
+                            <div class="form-group"><label>Father Occupation</label> <input type="text" placeholder="Father Occupation" class="form-control" id="txtfatheroccupation"> </div>
+                            <div class="form-group">
+                                <label>Program</label> <select class="form-control" id="ddlProgram" onchange="Bindbranch()">
+                                    <option value="">--Select Program--</option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value=@item.Id>@item.Program</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"><label>Eamil</label> <input type="text" placeholder="Eamil" class="form-control" id="email"> </div>
+                            <div class="form-group"><label>Mother Name</label> <input type="text" placeholder="Mother Name" class="form-control" id="txtmother"> </div>
+                            <div class="form-group"><label>DOB</label> <input type="date" placeholder="dd-mm-yy" class="form-control" id="dob"> </div>
+                            <div class="form-group">
+                                <label>Branch</label> <select class="form-control" id="ddlbranch">
+                                    <option value="">--Select Branch--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Gender</label> <select class="form-control" id="gender">
+                                    <option value="">--Select Gender--</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Group</label>
+                                <select class="form-control" id="group">
+                                    <option value="">--Select Group--</option>
+                                    <option value="A">A</option>
+                                    <option value="K">K</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Mobile</label> <input type="text" placeholder="Mobile" class="form-control" id="mobile"> </div>
+                            <div class="form-group"><label>Address</label> <textarea class="form-control" placeholder="Address" id="address"></textarea></div>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button" style="margin-top: 11px;" class="btn btn-outline-primary waves-effect waves-light" id="btnsubmit">Registration</button>
+                        </div>
+                    </div>
+                    <p class="form-message"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#btnsubmit').click(function() {
+            if ($('#name').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#name').focus();
+                return false;
+            }
+            if ($('#fname').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#fname').focus();
+                return false;
+            }
+            if ($('#email').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#email').focus();
+                return false;
+            }
+            if ($('#mobile').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#mobile').focus();
+                return false;
+            }
+            if ($('#dob').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#dob').focus();
+                return false;
+            }
+            if ($('#gender option:selected').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#gender').focus();
+                return false;
+            }
+            if ($('#ddlbranch option:selected').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#ddlbranch').focus();
+                return false;
+            }
+            if ($('#group option:selected').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#group').focus();
+                return false;
+            }
+            if ($('#address').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#address').focus();
+                return false;
+            }
+            if ($('#txtfatheroccupation').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#txtfatheroccupation').focus();
+                return false;
+            }
+            if ($('#txtmother').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#txtmother').focus();
+                return false;
+            }
+            if ($('#ddlProgram option:selected').val() == '') {
+                alert("Please Fill Requered Inpormation..");
+                $('#ddlProgram').focus();
+                return false;
+            }
+            var obj = {
+                Name: $('#name').val(),
+                Fname: $('#fname').val(),
+                Email: $('#email').val(),
+                Mobile: $('#mobile').val(),
+                DOB: $('#dob').val(),
+                Branch: $('#ddlbranch option:selected').val(),
+                Gender: $('#gender option:selected').val(),
+                Group: $('#group option:selected').val(),
+                Address: $('#address').val(),
+                FatherOccupation: $('#txtfatheroccupation').val(),
+                MotherName: $('#txtmother').val(),
+                Program: $('#ddlProgram option:selected').val()
+            }
+            preloader.load();
+            $.post('/studentregistration', obj).done(function(result) {
+                preloader.remove();
+                if (result.statuscode == 1) {
+                    swal.fire({
+                        title: "Success",
+                        text: result.msg + "  " + "Your Registration Number Is" + "  " + result.registrationNo,
+                        icon: "success",
+                        confirmButtonText: "GoBack"
+                        //timer: 500000
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        } else if (result.isDenied) {
+                            //timer: 70000
+                            window.location.reload();
+                        }
+                    });
+                }
+                if (result.statuscode == -1) {
+                    swal.fire({
+                        title: "Success",
+                        text: result.msg + "  " + "Your Registration Number Is" + "  " + result.registrationNo,
+                        icon: "info",
+                        timer: 500000
+                    });
+                }
+            }).fail(function(xhr) {
+                console.log(xhr.responseText);
+            });
+        });
+        Bindbranch();
+    });
+    var Bindbranch = () => {
+        $.post('/ProgramWiseBranch', { ProgramId: $('#ddlProgram option:selected').val() }).done(function(result) {
+            $('#ddlbranch').empty();
+            for (var i = 0; i < result.length; i++) {
+                $('#ddlbranch').append('<option value="' + result[i].branchId + '">' + result[i].branchName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+</script>

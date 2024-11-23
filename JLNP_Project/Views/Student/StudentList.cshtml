@@ -1,0 +1,94 @@
+﻿<div class="row px-2 py-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bgred">
+                <h4 style="color:black;">Registartion Report</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <lable>From Date</lable>
+                        <input type="text" id="txtfromdate" class="form-control" placeholder="From Date">
+                    </div>
+                    <div class="col-md-3">
+                        <lable>To Date</lable>
+                        <input type="text" id="txttodate" class="form-control" placeholder="From Date">
+                    </div>
+                    <div class="col-md-3">
+                        <lable>Registration Number</lable>
+                        <input type="text" class="form-control" id="registrationnumber" placeholder="Registration Numbe">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="FilterData()" class="btn btn-outline-primary waves-effect waves-light" style="margin-top: 20px;" id="btnsearch">Search</button>
+                    </div>
+                </div>
+                <div class="table-responsive" style="margin-top: 13px;">
+                    <table class="table table-striped" id="tblstudent">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th class="text-nowrap">Father Name</th>
+                                <th class="text-nowrap">Mother Name</th>
+                                <th class="text-nowrap">Father Occupation</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
+                                <th>DOB</th>
+                                <th class="text-nowrap">RegistrationNo</th>
+                                <th>Program</th>
+                                <th>Branch</th>
+                                <th class="text-nowrap">Admission Type</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th>EntryDate</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        LoadDate('txtfromdate', 'txttodate');
+        Loaddata();
+    });
+    var FilterData = () => {
+        let obj = {
+            RegistrationNo: $('#registrationnumber').val(),
+            FromDate: $('#txtfromdate').val(),
+            ToDate: $('#txttodate').val(),
+        }
+        preloader.load();
+        $.post('/Student/GetStudent', obj).done(function(result) {
+            preloader.remove();
+            $('#tblstudent tbody').html(result);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+        });
+    }
+    var Loaddata = function() {
+        preloader.load();
+        $.post('/Student/GetStudent').done(function(result) {
+            preloader.remove();
+            $('#tblstudent tbody').html(result);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+        });
+    }
+    var LoadDate = (FromId, ToId) => {
+        setCurrentDate(FromId, ToId);
+        $("#" + FromId).datepicker();
+        $("#" + ToId).datepicker();
+    }
+    var setCurrentDate = function(textIdfrom, textIdto) {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = (day) + "-" + (month) + "-" + now.getFullYear();
+        $('#' + textIdfrom).val(today);
+        $('#' + textIdto).val(today);
+    }
+</script>

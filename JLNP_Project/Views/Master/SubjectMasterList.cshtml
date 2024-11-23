@@ -1,0 +1,112 @@
+﻿@model List<ProgramMaster>
+<div class="">
+    <div class="">
+        <div class="row py-2 px-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                        <h3 style="color:black;">Subject Master</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label>Select Program<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlprogram" onchange="Bindbranch()">
+                                    <option value="0">--Select Program--</option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.Id">@item.Program</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Select Branch<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlbranch">
+                                    <option value="0">--Select Branch--</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Select Year<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlyear">
+                                    <option value="">--Select Year--</option>
+                                    <option value="1">First Year</option>
+                                    <option value="2">Secound Year</option>
+                                    <option value="3">Third Year</option>
+                                    <option value="4">Final Year</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3" style="display: flex;">
+                                <button class="btn btn-outline-primary" style="margin-top: 25px; margin-left: 3px;" onclick="loaddata()">Search</button>
+                                <button class="btn btn-outline-danger" style="margin-top: 25px; margin-left: 3px;" onclick="SubjectMaster()">Add New +</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="margin-top:13px;">
+                            <table class="table table-striped" id="tblbranch">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="text-nowrap">Program</th>
+                                        <th class="text-nowrap">Branch Name</th>
+                                        <th class="text-nowrap">Year</th>
+                                        <th class="text-nowrap">Subject</th>
+                                        <th class="text-nowrap">Subject Code</th>
+                                        <th class="text-nowrap">Subject Type</th>
+                                        <th class="text-nowrap">Theory Marks</th>
+                                        <th class="text-nowrap">Practical Marks</th>
+                                        <th class="text-nowrap">Practical Passing Marks</th>
+                                        <th class="text-nowrap">Passing Marks</th>
+                                        <th class="text-nowrap">IsPrectical</th>
+                                        <th class="text-nowrap">IsWritten</th>
+                                        <th class="text-nowrap">EntryDate</th>
+                                        <th class="text-nowrap">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        loaddata();
+    });
+    var SubjectMaster = () =>{
+        window.location.href = '/Master/SubjectMaster';
+    }
+    var loaddata = () => {
+        let obj = {
+            Program:$('#ddlprogram option:selected').val(),
+            BranchId:$('#ddlbranch option:selected').val(),
+            Year:$('#ddlyear option:selected').val()
+        }
+        preloader.load();
+        $.post('/Master/GetSubjectMaster',obj).done(function(result) {
+            $('#tblbranch tbody').html(result);
+            preloader.remove();
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+            alert('Server Error');
+        });
+    }
+    var DeleteSubject = (id) =>{
+        $.post('/Admission/BindProgramWiseBranch', { Id: id }).done(function(result) {
+            alertnotify(result.statuscode,result.msg);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+    var Bindbranch = () => {
+        $.post('/Admission/BindProgramWiseBranch', { ProgramId: $('#ddlprogram option:selected').val() }).done(function(result) {
+            $('#ddlbranch').empty();
+            for (var i = 0; i < result.length; i++) {
+                $('#ddlbranch').append('<option value="' + result[i].branchId + '">' + result[i].branchName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+</script>

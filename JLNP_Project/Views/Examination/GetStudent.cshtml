@@ -1,0 +1,79 @@
+﻿@model Attendance
+@{
+    <table class="table table-striped" id="tblstudent">
+        <thead>
+            <tr>
+                <th>#</th>
+                @if (!Model.IsMarks)
+                {
+                    <th><input type="checkbox" class="radiocus" id="assign-all" onclick="Checkall()" value="1"> Action</th>
+                }
+                <th>Enrollment</th>
+                <th>Name</th>
+                @if (Model.IsMarks)
+                {
+                    <th><input type="checkbox" class="radiocus" id="assign-all" onclick="Checkall()" value="1"> Attendance</th>
+                    <th>Marks</th>
+                    <th>Note</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 0;
+                foreach (var item in Model.Studentlist)
+                {
+                    i++;
+                    <tr data-id="@item.RegistrationNo">
+                        <td>@i</td>
+                        @if (!Model.IsMarks)
+                        {
+                            <td>
+                                <div class="radio radio-info radio-inline">
+                                    <input type="checkbox" class="radiocus" id="assign-@i" value="1" name="assign_@i" @Html.Raw(item.IsAssign ? "checked='checked'" : "")>
+                                </div>
+                            </td>
+                        }
+                        <td>@item.RegistrationNo</td>
+                        <td>@item.Name</td>
+                        @if (Model.IsMarks)
+                        {
+                            <td>
+                                <div class="radio radio-info radio-inline">
+                                    <input type="checkbox" class="radiocus" id="absent_@i" value="1" name="absent_@item.RegistrationNo">
+                                </div>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" id="marks_@item.RegistrationNo" data-val="true">
+                            </td>
+                            <td>                                
+                                <input type="text" class="form-control" id="note_@item.RegistrationNo" data-val="true" >
+                            </td> 
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-sm-12" style="display: flex; flex-direction: row-reverse;">
+            @if (Model.IsMarks)
+            {
+                <button type="button" class="btn btn-outline-primary mt-2" onclick="Savemarks('@i','@Model.SubjectID','@Model.ExamID')" id="tbl">Save</button>
+            }
+            else{
+                <button type="button" class="btn btn-outline-primary mt-2" onclick="AssignExam('@i')" id="tbl">Save</button>
+            }
+        </div>
+    </div>
+}
+<script>
+    var Checkall = () => {
+        if ($('#assign-all').is(':checked')) {
+            $('.radiocus').attr('checked', true);
+        }
+        else {
+            $('.radiocus').attr('checked', false);
+        }
+    }
+</script>

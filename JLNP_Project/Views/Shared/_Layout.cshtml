@@ -1,0 +1,312 @@
+﻿@using JLNP_Project.AppCode.Helper
+@using JLNP_Project.Models
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IHttpContextAccessor accessor
+@{
+    var userdata = new LoginInfo();
+    var IsSession = "false";
+    if (accessor.HttpContext.Session.GetString(AppConsts.AppSession) != null)
+    {
+        userdata = JsonConvert.DeserializeObject<LoginInfo>(accessor.HttpContext.Session.GetString(AppConsts.AppSession));
+        IsSession = "true";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - WEBAPP</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback">
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/Custom.css">
+    <link rel="stylesheet" href="~/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="~/plugins/jqvmap/jqvmap.min.css">
+    <link rel="stylesheet" href="~/dist/css/adminlte.min2167.css?v=3.2.0">
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script nonce="9c762108-e1b1-49ee-9238-91675a59bdc0">(function(w, d) { !function(dK, dL, dM, dN) { dK[dM] = dK[dM] || {}; dK[dM].executed = []; dK.zaraz = { deferred: [], listeners: [] }; dK.zaraz.q = []; dK.zaraz._f = function(dO) { return function() { var dP = Array.prototype.slice.call(arguments); dK.zaraz.q.push({ m: dO, a: dP }) } }; for (const dQ of ["track", "set", "debug"]) dK.zaraz[dQ] = dK.zaraz._f(dQ); dK.zaraz.init = () => { var dR = dL.getElementsByTagName(dN)[0], dS = dL.createElement(dN), dT = dL.getElementsByTagName("title")[0]; dT && (dK[dM].t = dL.getElementsByTagName("title")[0].text); dK[dM].x = Math.random(); dK[dM].w = dK.screen.width; dK[dM].h = dK.screen.height; dK[dM].j = dK.innerHeight; dK[dM].e = dK.innerWidth; dK[dM].l = dK.location.href; dK[dM].r = dL.referrer; dK[dM].k = dK.screen.colorDepth; dK[dM].n = dL.characterSet; dK[dM].o = (new Date).getTimezoneOffset(); if (dK.dataLayer) for (const dX of Object.entries(Object.entries(dataLayer).reduce(((dY, dZ) => ({ ...dY[1], ...dZ[1] })), {}))) zaraz.set(dX[0], dX[1], { scope: "page" }); dK[dM].q = []; for (; dK.zaraz.q.length;) { const d_ = dK.zaraz.q.shift(); dK[dM].q.push(d_) } dS.defer = !0; for (const ea of [localStorage, sessionStorage]) Object.keys(ea || {}).filter((ec => ec.startsWith("_zaraz_"))).forEach((eb => { try { dK[dM]["z_" + eb.slice(7)] = JSON.parse(ea.getItem(eb)) } catch { dK[dM]["z_" + eb.slice(7)] = ea.getItem(eb) } })); dS.referrerPolicy = "origin"; dS.src = "../../cdn-cgi/zaraz/sd0d9.js?z=" + btoa(encodeURIComponent(JSON.stringify(dK[dM]))); dR.parentNode.insertBefore(dS, dR) };["complete", "interactive"].includes(dL.readyState) ? zaraz.init() : dK.addEventListener("DOMContentLoaded", zaraz.init) }(w, d, "zarazData", "script"); })(window, document);</script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="~/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="z-index: 1;">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <div class="navbar-search-block">
+                        <form class="form-inline">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                                <div class="input-group-append">
+                                    <button class="btn btn-navbar" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-comments"></i>
+                        <span class="badge badge-danger navbar-badge">3</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <a href="#" class="dropdown-item">
+
+                            <div class="media">
+                                <img src="~/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Brad Diesel
+                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+
+                            <div class="media">
+                                <img src="~/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        John Pierce
+                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">I got your message bro</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+
+                            <div class="media">
+                                <img src="~/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Nora Silvester
+                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">The subject goes here</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-warning navbar-badge">15</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-envelope mr-2"></i> 4 new messages
+                            <span class="float-right text-muted text-sm">3 mins</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-users mr-2"></i> 8 friend requests
+                            <span class="float-right text-muted text-sm">12 hours</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i> 3 new reports
+                            <span class="float-right text-muted text-sm">2 days</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="z-index: 1;">
+
+            <a href="/" class="brand-link">
+                <img src="~/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">ERP</span>
+            </a>
+            <div class="sidebar">
+                <div class="form-inline">
+                    <div class="input-group" data-widget="sidebar-search">
+                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-sidebar">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p href="/">
+                                    Dashboard
+                                </p>
+                            </a>
+                        </li>
+                        @if(userdata.LoginTypeId == 1)
+                        {
+                            @Html.Partial("/Views/Menu/Admin.cshtml");
+                        }
+                        else if(userdata.LoginTypeId == 2){
+                            @Html.Partial("/Views/Menu/Teacher.cshtml");
+                        }
+                        <li class="nav-item">
+                            <a href="/Account/Logout" class="nav-link">
+                                <i class="nav-icon far fa-circle text-danger"></i>
+                                <p class="text">Logout</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </aside>
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2022 <a href="https://adminlte.io/">ERP</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> Asp.net core 6.0
+            </div>
+        </footer>
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/chart.js/Chart.min.js"></script>
+    <script src="~/plugins/sparklines/sparkline.js"></script>
+    <script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="~/dist/js/adminlte2167.js?v=3.2.0"></script>
+    <script src="~/dist/js/demo.js"></script>
+    <script src="~/dist/js/pages/dashboard.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/dist/sweetalert2.all.min.js"></script>
+    <script src="~/dist/sweetalert2.all.js"></script>
+    <script src="~/js/yearpicker.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/jquery.cookie.min.js"></script>
+    <script src="~/js/jquery.growl.js"></script>
+    <script src="~/js/slim_notifier.js"></script>
+    <script src="~/js/Notifier.min.js"></script>
+    <script src="~/plugins/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.11/signalr.min.js"></script>
+    <script src="~/js/chatHub.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        var ExpireAT = () => {
+            $.get('/ExpiresAt').done(function(result) {
+                let expireon = result.expiresat * 1000;
+                localStorage.setItem('userId', result.userId);
+                localStorage.setItem('password', result.password);
+                localStorage.setItem('loginTypeId', result.loginTypeId);
+                setTimeout(function() {
+                    Swal.fire({
+                        title: 'Your session expires in 20 seconds.',
+                        text: "You won't be able to refresh!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Stay Connected'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            loginAgain();
+                        }
+                    })
+                }, expireon - 20000);
+            }).fail(function(xhr) {
+                console.log(xhr.responseText);
+            });
+        }
+        ExpireAT();
+        var loginAgain = () => {
+            var href = window.location.href.split('/');
+            var url = '/' + href[3] + '/' + href[4];
+            let obj = {
+                UserId: localStorage.getItem('userId'),
+                Password: localStorage.getItem('password'),
+                ReturnUrl: url,
+                RequestMode: 3,
+                LoginTypeId: localStorage.getItem('loginTypeId')
+            }
+            $.post('/Account/Login', obj).done(function(result) {
+                if (result.statuscode == 1) {
+                    window.location.href = url;
+                }
+            }).fail(function(xhr) {
+                console.log(xhr.responseText);
+            });
+        }
+        var ChangePassword = function(userid) {
+            $.post('/Account/_ChangePassword', { UserID: userid }).done(function(result) {
+                showModel(result);
+            }).fail(function(xhr) {
+                console.log(xhr.responseText);
+            });
+        }
+    </script>
+</body>
+</html>

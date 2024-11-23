@@ -1,0 +1,61 @@
+﻿<div class="">
+    <div class="">
+        <div class="row px-2 py-2">
+            <div class="col-12">
+                <div class="card m-b-30">
+                    <div class="card-header bgred">
+                        <h4 style="color:black;">Notification Master</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="p-20">
+                                    <div class="form-group"><label>Notification Title</label> <input type="text" placeholder="Notification Title" class="form-control" id="NotificationTitle" required> </div>
+                                    <small id="NotificationTitlesm" class="text-danger d-none">Please Enter Notification Title</small>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="p-20">
+                                    <div class="form-group">
+                                        <label>Notification Description</label>
+                                        <textarea placeholder="Notification Description" class="form-control" id="notiDesc" required></textarea>
+                                        <small id="notiDescsm" class="text-danger d-none">Please Enter Notification Description</small>
+                                    </div>
+                                </div>
+                                <button type="button" style="display: flex; float: right;
+" class="btn btn-outline-primary waves-effect waves-light" onclick="btnsubmit()">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(() => {
+    applyTextEditor('notiDesc');
+});
+    var btnsubmit = () => {
+        let obj = {
+            Notificationtitle: $('#NotificationTitle').val(),
+            NotificationDescription: $('#notiDesc').val()
+        }
+        let isvalid = valiadteInputs();
+        if (!isvalid) {
+            return false;
+        }
+        preloader.load();
+        $.post('/Master/NotificationMaster', obj).done(function(result) {
+            preloader.remove();
+            alertnotify(result.statuscode, result.msg);
+            if (result.statuscode == 1) {
+                $('.form-control').val('');
+            }
+        }).fail(function() {
+            alert('Server Error');
+        });
+    }
+</script>

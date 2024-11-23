@@ -1,0 +1,78 @@
+﻿<div class="">
+    <div class="">
+        <div class="row px-2 py-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                            <h4 style="color:black;">Fees Submition</h4>
+                        </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <lable>From Date</lable>
+                                <input type="text" class="form-control" placeholder="From Date" id="fromdate">
+                            </div>
+                            <div class="col-md-2">
+                                <lable>To Date</lable>
+                                <input type="text" class="form-control" placeholder="From Date" id="todate">
+                            </div>
+                            <div class="col-md-2">
+                                <lable>Admission Number</lable>
+                                <input type="text" class="form-control" placeholder="Enrollment" id="enrollemntnumber">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" onclick="Loaddata()" class="btn btn-outline-primary waves-effect waves-light" style="margin-top:20px;" id="btnsearch">Search</button>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <hr />
+                        <div class="table-responsive" style="margin-top:12px;">
+                            <table class="table table-striped" id="tblstudent">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="text-nowrap">Student Name</th>
+                                        <th class="text-nowrap">Father Name</th>
+                                        <th class="text-nowrap">Program</th>
+                                        <th class="text-nowrap">Branch</th>
+                                        <th class="text-nowrap">Year</th>
+                                        <th class="text-nowrap">Fees Status</th>
+                                        <th class="text-nowrap">Address</th>
+                                        <th class="text-nowrap">Enrollment</th>
+                                        <th class="text-nowrap">RecieptNo</th>
+                                        <th class="text-nowrap">Mode</th>
+                                        <th class="text-nowrap">Total Fees</th>
+                                        <th class="text-nowrap">Submited Fees</th>
+                                        <th class="text-nowrap">Due Fees</th>
+                                        <th class="text-nowrap">Submition Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        LoadDate('fromdate', 'todate');
+    });
+    var Loaddata = function() {
+        let obj = {
+            Fromdate:$('#fromdate').val(),
+            Todate:$('#todate').val(),
+            EnrollmentNo:$('#enrollemntnumber').val(),
+        }
+        $.post('/AccountManagement/StudentSubmitFees',obj).done(function(result) {
+            preloader.load();
+            $('#tblstudent tbody').html(result);
+            preloader.remove();
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+            alert('Server Error');
+        });
+    }
+</script>

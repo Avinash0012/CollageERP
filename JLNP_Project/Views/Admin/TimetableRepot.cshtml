@@ -1,0 +1,156 @@
+﻿@model List<ProgramMaster>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 0.5px solid #ccc;
+        background-color: #f1f1f1;
+        height: 38px;
+        display: flex;
+        align-content: flex-start;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+        .tab button {
+            font-size: 13px;
+        }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+        overflow-y: scroll;
+        height: 70%;
+    }
+</style>
+<div class="">
+    <div class="container">
+        <div class="row py-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                        <h4 style="color:black;">Time Table</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label>Program</label>
+                                <select class="form-control" id="ddlprogram" onchange="Bindbranch()">
+                                    <option value="0">:: Select Program ::</option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.Id">@item.Program</option>
+                                    }
+                                </select>
+                                <input type="hidden" value="tblMonday" id="hdnid" />
+                                <small class="text-danger d-none" id="Program">Please select program..</small>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Branch</label>
+                                <select class="form-control" id="ddlbranch">
+                                    <option value="0">:: Select Branch ::</option>
+                                </select>
+                                <small class="text-danger d-none" id="branchv">Please select branch..</small>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Year</label>
+                                <select class="form-control" id="ddlyear">
+                                    <option value="0">:: Select Year ::</option>
+                                    <option value="1">First Year</option>
+                                    <option value="2">Seccond Year</option>
+                                    <option value="3">Third Year</option>
+                                    <option value="4">Final Year</option>
+                                </select>
+                                <small class="text-danger d-none" id="yearv">Please select year..</small>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-outline-warning mt-4" onclick="Search()">Search</button>
+                            </div>
+                        </div>
+                        <hr />
+                        <div id="divttl"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var Bindbranch = () => {
+        $.post('/Admission/BindProgramWiseBranch', { ProgramId: $('#ddlprogram option:selected').val() }).done(function(result) {
+            $('#ddlbranch').empty();
+            for (var i = 0; i < result.length; i++) {
+                $('#ddlbranch').append('<option value="' + result[i].branchId + '">' + result[i].branchName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+    var Search = () => {
+        let obj = {
+            BranchId: $('#ddlbranch option:selected').val(),
+            Program: $('#ddlprogram option:selected').val(),
+            Year: $('#ddlyear option:selected').val()
+        }
+        if (obj.Program == '0' || obj.Program == undefined) {
+            $('#Program').removeClass('d-none');
+            return false;
+        }
+        else {
+            $('#Program').addClass('d-none');
+        }
+        if (obj.Program == '0' || obj.Program == undefined) {
+            $('#branchv').removeClass('d-none');
+            return false;
+        }
+        else {
+            $('#branchv').addClass('d-none');
+        }
+        if (obj.Year == '0' || obj.Year == undefined) {
+            $('#yearv').removeClass('d-none');
+            return false;
+        }
+        else {
+            $('#yearv').addClass('d-none');
+        }
+        preloader.load();
+        $.post('/Admin/GetTimeTableReport', obj).done(function(result) {
+            preloader.remove();
+            $('#divttl').html(result);
+            loadpartial(obj);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+            alert('Server Error');
+        });
+    }
+</script>

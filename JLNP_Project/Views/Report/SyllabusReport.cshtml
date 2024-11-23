@@ -1,0 +1,119 @@
+﻿<div class="row px-2 py-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bgred">
+                <h4 style="color:black;">Syllabus</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <lable>Branch</lable>
+                        <select class="form-control" id="ddlBranch">
+                            <option value="0">-- Select Branch --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="filterdata()" class="btn btn-outline-primary waves-effect waves-light" style="margin-top:20px;" id="btnsearch">Search</button>
+                    </div>
+                    <!-- end col -->
+                </div>
+                <div class="table-responsive" style="margin-top:13px;">
+                    <table class="table mb-0 table-striped" id="tbldata">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Program</th>
+                                <th>Branch</th>
+                                <th>Year</th>
+                                <th>Subject</th>
+                                <th>EntryDate</th>
+                                <th>Syllabus</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        Bindbranch();
+        loadrecord(0, '', $('#ddlBranch option:selected').val());
+    });
+    var loadrecord = (Id, path, barnch) => {
+        $.post('/Report/GetSyllabusMaster', { ID: Id, Path: path, BranchID: barnch }).done(function(result) {
+            $('#tbldata tbody').html(result);
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console.log(xhr.responseText);
+        });
+    }
+    var Bindbranch = () => {
+        $.post('/AccountManagement/BindBranch').done(function(result) {
+            $('#ddlBranch').empty().append('<option value="">--Select Branch--</option>');
+            for (var i = 0; i < result.length; i++) {
+                $('#ddlBranch').append('<option value="' + result[i].branchId + '">' + result[i].branchName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+    var deletedata = (Id) => {
+        $.post('/Master/DeleteSyllabus', { ID: Id }).done(function(result) {
+            alertnotify(result.statuscode, result.msg);
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console.log(xhr.responseText);
+        });
+    }
+    var EditSyllabus = (Id) => {
+        $.post('/Master/EditSyllabus', { ID: Id }).done(function(result) {
+            $('body').append(result);
+            $('#myModalNew').modal('show');
+            $('[data-dismiss="modal"]').unbind().click(function() {
+                $('.modal,.modal-backdrop').remove();
+            })
+        }).fail(function(xhr) {
+            alert('Server Error');
+            console.log(xhr.responseText);
+        });
+    }
+    var Saverecord = function(Id) {
+        let obj = {
+            ID: Id,
+            Branch: $('#ddlbranch option:selected').val(),
+            Program: $('#ddlprogram option:selected').val(),
+            Subject: $('#ddlsubject option:selected').val(),
+            Year: $('#ddlyear option:selected').val(),
+            Files: $('#file').prop('files')[0]
+        }
+        formData = new FormData();
+        formData.append("Files", obj.Files);
+        formData.append("Branch", obj.Branch);
+        formData.append("Subject", obj.Subject);
+        formData.append("Year", obj.Year);
+        formData.append("Program", obj.Program);
+        formData.append("ID", obj.ID);
+        $.ajax({
+            type: 'POST',
+            url: '/Master/UpdateSyllabusMaster',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(repo) {
+                alertnotify(repo.statuscode, repo.msg);
+            },
+            error: function() {
+                alert("Server Error");
+            }
+        });
+    }
+    var filterdata = function() {
+        let barnch = $('#ddlBranch option:selected').val();
+        loadrecord(0, '', barnch);
+    }
+</script>

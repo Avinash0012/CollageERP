@@ -1,0 +1,93 @@
+﻿@{
+    Layout = null;
+}
+@model Account
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="/login/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/login/fonts/font-awesome/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/login/fonts/flaticon/font/flaticon.css">
+    <link rel="shortcut icon" href="/login/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800%7CPoppins:400,500,700,800,900%7CRoboto:100,300,400,400i,500,700">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/login/css/style.css">
+    <link rel="stylesheet" type="text/css" id="style_sheet" href="/login/css/skins/default.css">
+    <link href="~/css/Custom.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+    <div class="page_loader"></div>
+    <div class="login-20">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="login-inner-form">
+                        <form action="" method="post">
+                            <div class="details">
+                                <a href="/">
+                                    <img src="/Assessts/img/core-img/logo_red.png" alt="logo">
+                                </a><br />
+                                <small class="text-danger" id="msg"></small>
+                                <div class="form-group form-box">
+                                    <select class="form-control" name="LoginTypeId" id="ddlusertype" asp-for="@Model.LoginTypeId">
+                                        <option value="0">:: Select Login Type ::</option>
+                                        <option value="1" selected>Institute</option>
+                                        <option value="2">Teacher</option>
+                                        <option value="3">Student</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-box">
+                                    <input type="hidden" name="RequestMode" asp-for="@Model.RequestMode" value="1"/>
+                                    <input type="text" name="UserId" id="UserId" asp-for="@Model.UserId" class="form-control" placeholder="User Name" aria-label="User Name">
+                                    <small class="d-none text-danger" id="UserIdsp">Enter UserName</small>
+                                </div>
+                                <div class="form-group form-box">
+                                    <input type="password" id="password" name="password" asp-for="@Model.Password" class="form-control" autocomplete="off" placeholder="Password" aria-label="Password">
+                                    <span class="d-none text-danger" id="passwordsp">Enter Password</span>
+                                </div>
+                                <div class="checkbox form-group form-box clearfix mt-0">
+                                    <div class="form-check checkbox-theme">
+                                        <input class="form-check-input" type="checkbox" value="" id="rememberMe">
+                                        <label class="form-check-label" for="rememberMe">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <a href="/Account/ForgetPassword">Forgot Password</a>
+                                </div>
+                                @if (@TempData["ErrMsg"] != null)
+                                {
+                                    <small class="text-danger" style="margin-right: 150px;">@TempData["ErrMsg"]</small>
+                                }
+                                <div class="form-group mb-0">
+                                    <button type="submit" class="btn-md btn-theme w-100">Login</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/login/js/jquery.min.js"></script>
+    <script src="/login/js/popper.min.js"></script>
+    <script src="/login/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/dist/sweetalert2.all.min.js"></script>
+    <script src="~/dist/sweetalert2.all.js"></script>
+    <script>
+        if (@TempData["ErrMsg"] != null) {
+            alertnotify(-1, @TempData["ErrMsg"]);
+        }
+        var ForgetPassword = function() {
+            $.post('/Account/ForgetPassword').done(function(result) {
+                showModel(result);
+            }).fail(function(xhr) {
+                console.log(xhr.responseText);
+            });
+        }
+    </script>
+</body>
+</html>

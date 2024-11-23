@@ -1,0 +1,148 @@
+﻿@model List<ProgramMaster>
+<div class="">
+    <div class="">
+        <div class="row py-2 px-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bgred">
+                        <h3 style="color:black;">Subject Master</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>Select Program<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlprogram" onchange="Bindbranch()" required>
+                                    <option value="">--Select Program--</option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.Id">@item.Program</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Select Branch<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlbranch" required>
+                                    <option value="">--Select Branch--</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Select Year<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlyear" required>
+                                    <option value="">--Select Year--</option>
+                                    <option value="1">First Year</option>
+                                    <option value="2">Secound Year</option>
+                                    <option value="3">Third Year</option>
+                                    <option value="4">Final Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>Subject Name<span style="color:red;">*</span></label>
+                                <input type="text" id="txtsubjectname" placeholder="Subject Name" class="form-control" required/>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Subject Code<span style="color:red;">*</span></label>
+                                <input type="text" id="txtsubjectCode" placeholder="Subject Code" class="form-control" required />
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Theory Marks<span style="color:red;">*</span></label>
+                                <input type="number" id="txttheoryMarks" placeholder="Theory Marks" required class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>Passing Marks<span style="color:red;">*</span></label>
+                                <input type="number" id="txtpassing" placeholder="Passing Marks" required class="form-control" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Subject Type<span style="color:red;">*</span></label>
+                                <select class="form-control" id="ddlsubjecttype" required>
+                                    <option value="">-- Select Type --</option>
+                                    <option value="optional">Optional</option>
+                                    <option value="Conpalsary">Compulsory</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 d-none prec">
+                                <label>Prectical Marks<span style="color:red;">*</span></label>
+                                <input type="number" id="txtprecticalMarks" placeholder="Prectical Marks" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 d-none prec">
+                                <label>Prectical Passing Marks<span style="color:red;">*</span></label>
+                                <input type="number" id="txtPrecPassingmarks" placeholder="Prectical Passing Marks" class="form-control" required />
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group-append">
+                                    <span class="input-group-text switch switch-sm bg-white align">
+                                        <input type="checkbox" class="switch" id="isprectical" onchange="PrecticalDetail()" required/>
+                                        <label for="isprectical"></label>
+                                        <p style="margin-left:5px;">IsPrectical</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <button class="btn btn-outline-primary" onclick="submitdata()" style="margin-top: 25px;width: 43%;">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        Bindbranch();
+    });
+    var PrecticalDetail = () => {
+        let isprectical = $('#isprectical').is(':checked');
+        if (isprectical) {
+            $('.prec').removeClass('d-none');
+        }
+        else {
+            $('.prec').addClass('d-none');
+        }
+    }
+    var submitdata = () => {
+        let isprectical = false;
+        let isvalid = valiadteInputs();
+        if (!isvalid) {
+            return false;
+        }
+        let obj = {
+            Program: $('#ddlprogram option:selected').val(),
+            Branch: $('#ddlbranch option:selected').val(),
+            BranchId: $('#ddlbranch option:selected').val(),
+            Year: $('#ddlyear option:selected').val(),
+            SubjectName: $('#txtsubjectname').val(),
+            SubjectCode: $('#txtsubjectCode').val(),
+            SubjectType: $('#ddlsubjecttype option:selected').val(),
+            TheoryMarks: $('#txttheoryMarks').val(),
+            PracticalMarks: $('#txtprecticalMarks').val(),
+            PassingMarks: $('#txtpassing').val(),
+            IsPrectical:isprectical,
+            PecticalPassingMarks:$('#txtPrecPassingmarks').val()
+        }
+        preloader.load();
+        $.post('/Master/SaveSubjectMaster', obj).done(function(result) {
+            preloader.remove();
+            alertnotify(result.statuscode, result.msg);
+        }).fail(function(xhr) {
+            alert("Server Error");
+        });
+    }
+    var Bindbranch = () => {
+        $.post('/Admission/BindProgramWiseBranch', { ProgramId: $('#ddlprogram option:selected').val() }).done(function(result) {
+            $('#ddlbranch').empty();
+            for (var i = 0; i < result.length; i++) {
+                $('#ddlbranch').append('<option value="' + result[i].branchId + '">' + result[i].branchName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+</script>

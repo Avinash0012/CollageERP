@@ -1,0 +1,73 @@
+﻿@model GradeViewModel
+<div class="modal fade bs-example-modal-center show" tabindex="-1" id="myModalNew" role="dialog" aria-labelledby="mySmallModalLabel" aria-modal="true" style="display: block; padding-right: 17px;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Exam Grade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <label>Exam Type<span style="color:red;">*</span></label>
+                <select class="form-control" id="ddlexamtype" asp-for="@Model.data.ExamType">
+                    <option value="0">:: Select ExamType ::</option>
+                    @foreach (var item in Model.type)
+                    {
+                        <option value="@item.Id">@item.ExamTypes</option>
+                    }
+                </select>
+                <label>Grade Name</label>
+                <input type="text" class="form-control" id="textgradename" asp-for="@Model.data.GradeName" />
+                <label>Precent Upto(%)</label>
+                <input type="number" class="form-control" id="textprecentupto" asp-for="@Model.data.PrecentUpto"/>
+                <label>Precent From(%)</label>
+                <input type="number" class="form-control" id="textprecentfrom" asp-for="@Model.data.PrecentFrom" />
+                <label>Grade Point</label>
+                <input type="number" class="form-control" id="txtgradepoint" asp-for="@Model.data.GradePoint" />
+                <label>Description</label>
+                <textarea type="text" class="form-control" id="description" asp-for="@Model.data.Discreption"></textarea>
+                <input type="hidden" id="txtid" asp-for="@Model.data.Id" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="AddExamgrade()" id="btnsave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var AddExamgrade = () =>{
+        let obj = {
+            Id:$('#txtid').val(),
+            ExamType:$('#ddlexamtype').val(),
+            GradeName: $('#textgradename').val(),
+            PrecentUpto:$('#textprecentupto').val(),
+            PrecentFrom:$('#textprecentfrom').val(),
+            GradePoint:$('#txtgradepoint').val(),
+            Discreption:$('#description').val()
+        }
+        if(obj.ExamType == '0'){
+            alert('Please select exam type');
+            return false;
+        }
+        if(obj.GradeName == ''){
+            alert('Please enter GradeName');
+            return false;
+        }
+        if(obj.PrecentUpto == ''){
+            alert('Please enter PrecentUpto');
+            return false;
+        }
+        if(obj.PrecentFrom == ''){
+            alert('Please enter PrecentFrom');
+            return false;
+        }
+        if(obj.Point == ''){
+            alert('Please enter GradePoint');
+            return false;
+        }
+        $.post('/Examination/SaveExamGrade', obj).done(function(result) {
+            alertnotify(result.statuscode,result.msg);
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+</script>

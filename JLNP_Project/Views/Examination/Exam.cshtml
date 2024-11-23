@@ -1,0 +1,203 @@
+﻿<div class="row py-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bgred">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h4 style="color:black;">Exam List</h4>
+                    </div><div class="col-sm-9">
+                        <button class="btn btn-outline-primary" id="btnsubmit" data-animation="pulse" data-toggle="modal" data-target="#exampleModalLong-1" onclick="AddExam()" style="float: right;">
+                            + Add New
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive table-striped" style="margin-top:13px;">
+                    <table class="table mb-0" id="tblexam">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th>#</th>
+                                <th><span style="float: right;">Exam</span></th>
+                                <th><span style="float: right;">Exam Group</span></th>
+                                <th><span style="float: right;">EntryDate</span></th>
+                                <th><span style="float: right;">Action</span></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        loaddata();
+    });
+    var loaddata = () => {
+        $.post('/Examination/GetExams').done(function(result) {
+            $('#tblexam tbody').html(result);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText);
+        });
+    }
+    var AddExam = (id) => {
+        $.post('/Examination/AddExam', { Id: id }).done(function(result) {
+            showModel(result);
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+    var DeleteExam = (id) => {
+        $.post('/Examination/DeleteExams', { Id: id }).done(function(result) {
+            alertnotify(result.statuscode, result.msg);
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+    var AssignExam = (id) => {
+        $.post('/Examination/AssignExam', { Id: id }).done(function(result) {
+            showModel(result);
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+    var AddSubject = (id) => {
+        $.post('/Examination/AddExamSubject', { Id: id }).done(function(result) {
+            showModel(result);
+            loadsubject();
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+    var SearchStudent = (examid, _is, sid, Iswrite, isprectical) => {
+        let obj = {
+            BranchId: $('#ddlbranch option:selected').val(),
+            Program: $('#ddlprogram option:selected').val(),
+            Year: $('#ddlyear option:selected').val(),
+            ExamID: examid,
+            IsMarks: _is,
+            SID: sid,
+            IsWritten: Iswrite,
+            IsPrectical: isprectical
+        }
+        if (obj.Program == '0' || obj.Program == undefined) {
+            alert('Please select program');
+            return false;
+        }
+        if (obj.BranchId == '0' || obj.BranchId == undefined) {
+            alert('Please select barnch');
+            return false;
+        }
+        if (obj.Year == '0' || obj.Year == undefined) {
+            alert('Please select year');
+            return false;
+        }
+        else {
+            $('#yearv').addClass('d-none');
+        }
+        $.post('/Examination/GetStudent', obj).done(function(result) {
+            $('#divstudent').html(result);
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+    var loadsubject = () => {
+        $.post('/Examination/GetSubject').done(function(result) {
+            $('.ddlsubject').empty();
+            $('.ddlsubject').append('<option value="0">:: Select Subject ::</option>');
+            for (var i = 0; i < result.length; i++) {
+                $('.ddlsubject').append('<option value="' + result[i].subjectId + '">' + result[i].subjectName + '</option>')
+            }
+        }).fail(function(xhr) {
+            console.log(xhr.responseText)
+        });
+    }
+    var ExamSubject = (id) => {
+        $.post('/Examination/ExamSubjects', { ExamId: id }).done(function(result) {
+            showModel(result);
+            loadsubject();
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+    var ExamMarks = (id, SID) => {
+        $.post('/Examination/ExamMarks', { ExamId: id, SubjectId: SID }).done(function(result) {
+            $('.modal,.modal-backdrop').remove();
+            showModel(result);
+            loadsubject();
+        }).fail(function(xhr) {
+            console(xhr.responseText);
+        });
+    }
+    var Savemarks = (i, sid, examid, isprectical, iswritten) => {
+        var Isvalid = false;
+        var table = [];
+        if (iswritten) {
+            $('#tblstudent tbody tr').each(function() {
+                let currentRow = $(this);
+                let enroll = currentRow.attr('data-id');
+                let obj = {
+                    ExamID: examid,
+                    Program: $('#ddlprogram').val(),
+                    Branch: $('#ddlbranch').val(),
+                    Year: $('#ddlyear').val(),
+                    EnrollmentNo: enroll,
+                    SubjectId: sid,
+                    Id: $('#hdnid_' + enroll).val(),
+                    IsAttendance: currentRow.find('#absent_' + i).is(':checked'),
+                    Marks: $('#marks_' + enroll).val(),
+                    Note: $('#note_' + enroll).val(),
+                    IsWritten: iswritten
+                };
+                if (obj.IsAttendance) {
+                    if (obj.Marks == '' || obj.Marks == undefined) {
+                        alertnotify(-1, 'Please enter marks!');
+                        Isvalid = false;
+                        return false;
+                    }
+                }
+                table.push(obj);
+                Isvalid = true;
+            });
+        }
+        if (isprectical) {
+            $('#tblstudentprectical tbody tr').each(function() {
+                let currentRow = $(this);
+                let enroll = currentRow.attr('data-id');
+                let obj = {
+                    ExamID: examid,
+                    Program: $('#ddlprogram').val(),
+                    Branch: $('#ddlbranch').val(),
+                    Year: $('#ddlyear').val(),
+                    EnrollmentNo: enroll,
+                    SubjectId: sid,
+                    Id: $('#hdnid_' + enroll).val(),
+                    IsAttendance: currentRow.find('#absent_' + i).is(':checked'),
+                    Marks: $('#marks_' + enroll).val(),
+                    Note: $('#note_' + enroll).val(),
+                    IsPrectical: isprectical
+                };
+                if (obj.IsAttendance) {
+                    if (obj.Marks == '' || obj.Marks == undefined) {
+                        alertnotify(-1, 'Please enter marks!');
+                        Isvalid = false;
+                        return false;
+                    }
+                }
+                table.push(obj);
+                Isvalid = true;
+            });
+        }
+        if (Isvalid) {
+            $.post('/Examination/SaveExamMarks', { req: table }).done(function(result) {
+                alertnotify(result.statuscode, result.msg);
+            }).fail(function(xhr) {
+                console(xhr.responseText);
+                alertnotify(-1, 'Server Error');
+            });
+        }
+    }
+</script>

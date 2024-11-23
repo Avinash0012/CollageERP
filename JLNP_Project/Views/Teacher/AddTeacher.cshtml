@@ -1,0 +1,151 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col-12 px-2 py-2">
+            <div class="card mb-30">
+                <div class="card-header bgred">
+                    <h4 style="color:black;">Add Teacher</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="p-20">
+                                <div class="form-group"><label>Name</label> <input type="text" required placeholder="Name" class="form-control" id="name"> </div>
+                                <div class="form-group"><label>Father Name</label> <input type="text" required placeholder="Father Name" class="form-control" id="fname"> </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-20">
+                                <div class="form-group"><label>Eamil</label> <input type="text" required placeholder="Eamil" class="form-control" id="email"> </div>
+                                <div class="form-group"><label>DOB</label> <input type="date" required placeholder="dd-mm-yy" class="form-control" id="dob"> </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"><label>Mobile</label> <input type="text" required placeholder="Mobile" class="form-control" id="mobile"> </div>
+                            <div class="form-group"><label>Address</label> <textarea class="form-control" required placeholder="Address" id="address"></textarea></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 px-2 py-2">
+            <div class="card mb-30">
+                <div class="card-body">
+                    <div class="card-header bgred">
+                    <h4 style="color:black;">Education Details</h4>
+                </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group"><label>High School Marks</label> <input type="text" required placeholder="High School Marks" class="form-control" id="txthschool"> </div>
+                            <div class="form-group"><label>Inetrmediat Marks</label> <input type="text" required placeholder="High School Marks" class="form-control" id="txtintermediat"> </div>
+                            <div class="form-group">
+                                <label>Graduation</label>
+                                <select class="form-control" id="ddlug" required>
+                                    <option>--Select Graduation--</option>
+                                    <option>B.A</option>
+                                    <option>B.Sc</option>
+                                    <option>B.Ed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Post Graduation (Optional)</label>
+                                <select class="form-control" id="ddlpg" required>
+                                    <option>--Select Graduation--</option>
+                                    <option>M.A</option>
+                                    <option>M.Sc</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"><label>High School (%)</label> <input type="text" required placeholder="High School Marks (%)" class="form-control" id="txthschoolpre"> </div>
+                            <div class="form-group"><label>Inetrmediat (%)</label> <input type="text" required placeholder="Inetrmediat (%)" class="form-control" id="txtinterpre"> </div>
+                            <div class="form-group"><label>Graduation Marks</label> <input type="text" required placeholder="High School Marks (%)" class="form-control" id="txtugmarks"> </div>
+                            <div class="form-group"><label>Post Graduation Marks</label> <input type="text" required placeholder="Graduation Marks" class="form-control" id="txtpgmarks"> </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"><label>High School Board</label> <input type="text" required placeholder="High School Board" class="form-control" id="txthighschool"> </div>
+                            <div class="form-group"><label>Inetrmediat Board</label> <input type="text" required placeholder="Inetrmediat Board" class="form-control" id="txtinter"> </div>
+                            <div class="form-group"><label>Graduation Collage</label> <input type="text" required placeholder="Graduation Collage" class="form-control" id="txtUGC"> </div>
+                            <div class="form-group"><label>Post Graduation Collage</label> <input type="text" required placeholder="Post Graduation Collage" class="form-control" id="txtPG"> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 px-2 py-2">
+            <div class="card mb-30">
+                <div class="card-body">
+                    <div class="card-header bgred">
+                    <h4 style="color:black;">Work Experiance And Salary</h4>
+                </div>
+                    <b class="text-danger">Note*</b><p class="text-danger">Subjects can entered with (,) seprated.</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group"><label>Previous Collage</label> <input type="text" required placeholder="Previous Collage" class="form-control" id="txtpcollage"> </div>
+                            <div class="form-group"><label>Current Salary</label> <input type="text" required placeholder="Current Salary" class="form-control" id="txtsalary"> </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"><label>Subjects</label> <input type="text" required placeholder="Subjects" class="form-control" id="txtsubject"> </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"><label>Total Experiance (In Year)</label> <input type="number" placeholder="Total Experiance" class="form-control" id="txtexperiance" required> </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button"  class="btn btn-outline-primary waves-effect waves-light" id="btnsubmit">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#btnsubmit').click(function() {
+            let isvalid = valiadteInputs();
+        if (!isvalid) {
+            return false;
+        }
+            var obj = {
+                Name: $('#name').val(),
+                Fname: $('#fname').val(),
+                Email: $('#email').val(),
+                Mobile: $('#mobile').val(),
+                DOB: $('#dob').val(),
+                salary: $('#txtsalary').val(),
+                Address: $('#address').val(),
+                HighSchoolMarks:$('#txthschool').val(),
+                InterMarks:$('#txtintermediat').val(),
+                UGTitle:$('#ddlug').val(),
+                PGTitle:$('#ddlpg').val(),
+                HighSchool_P:$('#txthschoolpre').val(),
+                Inter_P:$('#txtinterpre').val(),
+                UGMarks:$('#txtugmarks').val(),
+                PGMarks:$('#txtpgmarks').val(),
+                HighSchool_B:$('#txthighschool').val(),
+                Inter_B:$('#txtinter').val(),
+                UG_Collage:$('#txtUGC').val(),
+                PG_Collage:$('#txtPG').val(),
+                PreviousCollage:$('#txtpcollage').val(),
+                Subjects:$('#txtsubject').val(),
+                Experiance:$('#txtexperiance').val()
+            }
+            preloader.load();
+            $.post('/Teacher/_AddTeacher', obj).done(function(result) {
+                preloader.remove();
+                alertnotify(result.statuscode, result.msg);
+                if(result.statuscode == 1){
+                    $('input').val('');
+                    $('select').val('0');
+                }
+            }).fail(function(xhr) {
+                console.log(xhr.responseText);
+            });
+        });
+    });
+</script>
